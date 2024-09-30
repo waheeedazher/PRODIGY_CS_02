@@ -1,0 +1,75 @@
+print("***IMAGE ENCRYPTION***")
+from PIL import Image
+
+# Function to encrypt the image by modifying pixel values
+def encrypt_image(image_path, shift_value):
+    # Open the image
+    img = Image.open(image_path)
+    img = img.convert('RGB')  # Ensure it's in RGB mode
+    encrypted_img = img.copy()
+    
+    # Get image dimensions
+    width, height = img.size
+    
+    # Load pixel data
+    pixels = encrypted_img.load()
+    
+    # Modify each pixel by adding the shift value
+    for x in range(width):
+        for y in range(height):
+            r, g, b = pixels[x, y]
+            pixels[x, y] = ((r + shift_value) % 256, (g + shift_value) % 256, (b + shift_value) % 256)
+
+    # Save the encrypted image
+    encrypted_image_path = "encrypted_image.png"
+    encrypted_img.save(encrypted_image_path)
+    print(f"Encrypted image saved as {encrypted_image_path}")
+    
+# Function to decrypt the image by reversing the pixel modification
+def decrypt_image(image_path, shift_value):
+    # Open the image
+    img = Image.open(image_path)
+    img = img.convert('RGB')  # Ensure it's in RGB mode
+    decrypted_img = img.copy()
+    
+    # Get image dimensions
+    width, height = img.size
+    
+    # Load pixel data
+    pixels = decrypted_img.load()
+    
+    # Reverse the modification by subtracting the shift value
+    for x in range(width):
+        for y in range(height):
+            r, g, b = pixels[x, y]
+            pixels[x, y] = ((r - shift_value) % 256, (g - shift_value) % 256, (b - shift_value) % 256)
+    
+    # Save the decrypted image
+    decrypted_image_path = "decrypted_image.png"
+    decrypted_img.save(decrypted_image_path)
+    print(f"Decrypted image saved as {decrypted_image_path}")
+
+# Main Program to handle user interaction
+def main():
+    while True:
+        choice = input("Do you want to (E)ncrypt or (D)ecrypt an image? (Press 'Q' to quit): ").lower()
+        
+        if choice == 'e':
+            image_path = input("Enter the path to the image to encrypt: ")
+            shift_value = int(input("Enter the shift value (a number between 0 and 255): "))
+            encrypt_image(image_path, shift_value)
+        
+        elif choice == 'd':
+            image_path = input("Enter the path to the image to decrypt: ")
+            shift_value = int(input("Enter the shift value used during encryption: "))
+            decrypt_image(image_path, shift_value)
+        
+        elif choice == 'q':
+            print("Goodbye!")
+            break
+        
+        else:
+            print("Invalid option. Please choose 'E', 'D', or 'Q'.")
+
+if __name__ == "__main__":
+    main()
